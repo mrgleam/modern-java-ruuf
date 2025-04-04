@@ -36,20 +36,19 @@ public class FtpService {
     }
 
     public Optional<ArrayList<String>> searchFiles(String keyword) {
-        ArrayList<String> targets = new ArrayList<String>();
         Optional<FTPFile[]> files = listFiles();
         if (files.isPresent()) {
+            ArrayList<String> targets = new ArrayList<>();
             targets.addAll(
                     Arrays.stream(files.get())
                             .filter(file -> file.getName().contains(keyword))
                             .map(FTPFile::getName)
                             .toList()
             );
-
+            return Optional.of(targets);
         } else {
             return Optional.empty();
         }
-        return Optional.of(targets);
     }
 
     public Optional<FTPFile[]> listFiles() {
