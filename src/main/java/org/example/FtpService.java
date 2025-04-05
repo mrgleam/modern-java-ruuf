@@ -21,18 +21,19 @@ public class FtpService {
         return searchFiles(keyword).flatMap(this::deleteTargetFiles);
     }
     public Optional<ArrayList<String>> deleteTargetFiles(ArrayList<String> targets) {
-        ArrayList<String> deletedFiles = new ArrayList<String>();
-        for(String filename: targets) {
+        ArrayList<String> deletedFiles = new ArrayList<>();
+        targets.forEach(filename -> {
             try {
-                this.ftpClient.deleteFile(filename);
+                if (this.ftpClient.deleteFile(filename)) {
+                    deletedFiles.add(filename); // Add only successfully deleted files
+                } else {
+                    System.err.println("Failed to delete file: " + filename);
+                }
             } catch (IOException e) {
-                return Optional.empty();            }
-            deletedFiles.add(filename);
-        }
-        if(deletedFiles.isEmpty()){
-            return Optional.empty();
-        }
-        return Optional.of(deletedFiles);
+                System.err.println("Error deleting file: " + filename + " - " + e.getMessage());
+            }
+        });
+        return deletedFiles.isEmpty() ? Optional.empty() : Optional.of(deletedFiles);
     }
 
     public Optional<ArrayList<String>> searchFiles(String keyword) {
@@ -63,21 +64,23 @@ public class FtpService {
             e.printStackTrace();
             return Optional.empty();
         }
-
     }
 
     public void uploadFile() throws IOException {
         String localFile = "test.txt"; // Path to local file
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-        String remoteFile = "uploaded_file_" + timeStamp + ".txt";
+        String remoteFile = "remote_file_" + timeStamp + ".txt";
         try (FileInputStream inputStream = new FileInputStream(localFile)) {
-            System.out.println("Uploading file...");
-            boolean done = this.ftpClient.storeFile(remoteFile, inputStream);
-            if (done) {
-                System.out.println("File uploaded successfully.");
+            System.out.println("Starting file upload: " + localFile + " -> " + remoteFile);
+            boolean isUploaded = this.ftpClient.storeFile(remoteFile, inputStream);
+            if (isUploaded) {
+                System.out.println("File uploaded successfully: " + remoteFile);
             } else {
-                System.out.println("Failed to upload file.");
+                System.err.println("File upload failed: " + remoteFile);
             }
+        } catch (IOException e) {
+            System.err.println("Error during file upload: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

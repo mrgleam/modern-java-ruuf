@@ -28,7 +28,7 @@ public class MainFtpClient {
             FtpService ftpService = new FtpService(ftpClient);
             // Specify the file to upload
             ftpService.uploadFile();
-            Optional<ArrayList<String>> deletedFiles = ftpService.searchAndDeleteFiles("914");
+            Optional<ArrayList<String>> deletedFiles = ftpService.searchAndDeleteFiles("32741");
 
             if(deletedFiles.isPresent()) {
                 printDeletedFiles(deletedFiles.get());
