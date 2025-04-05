@@ -27,15 +27,23 @@ public class MainFtpClient {
 
             FtpService ftpService = new FtpService(ftpClient);
             // Specify the file to upload
-            ftpService.uploadFile();
-            Optional<ArrayList<String>> deletedFiles = ftpService.searchAndDeleteFiles("32741");
+            String localFile = "test.txt"; // Path to local file
+            System.out.println("Starting file upload: " + localFile);
 
+            Optional<Boolean> uploadedResult = ftpService.uploadFile(localFile);
+            if(uploadedResult.isPresent()){
+                System.out.println("File uploaded successfully");
+            }else{
+                System.err.println("File upload failed");
+            }
+
+            Optional<ArrayList<String>> deletedFiles = ftpService.searchAndDeleteFiles("5131736");
             if(deletedFiles.isPresent()) {
                 printDeletedFiles(deletedFiles.get());
             }else{
                 System.out.println("Nothing to delete");
             }
-            // Logout and disconnect
+
             ftpClient.logout();
             ftpClient.disconnect();
         } catch (IOException ex) {
