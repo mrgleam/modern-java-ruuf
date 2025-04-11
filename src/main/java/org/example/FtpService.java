@@ -1,5 +1,6 @@
 package org.example;
 
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
@@ -9,7 +10,29 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class FtpService {
+    private String serverAddress;
+    private int port;
+    private String username;
+    private String password;
+
     private final FTPClient ftpClient;
+
+    public FtpService(String serverAddress, int port, String username, String password) {
+        this.serverAddress = serverAddress;
+        this.port = port;
+        this.username = username;
+        this.password = password;
+        ftpClient = new FTPClient();
+        try {
+            ftpClient.connect(serverAddress, port);
+            ftpClient.login(username, password);
+            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+            ftpClient.enterLocalPassiveMode();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public FtpService(FTPClient ftpClient) {
         this.ftpClient = ftpClient;
     }
@@ -58,6 +81,15 @@ public class FtpService {
                     : Optional.empty();
         } catch (IOException e) {
             return Optional.empty();
+        }
+    }
+
+    public void terminateConnection(){
+        try {
+            ftpClient.logout();
+            ftpClient.disconnect();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
