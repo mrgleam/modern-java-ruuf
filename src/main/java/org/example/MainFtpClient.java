@@ -58,21 +58,16 @@ public class MainFtpClient {
             // Specify the file to upload
             String localFile = "user_data.json"; // Path to local file
             System.out.println("Starting file upload: " + localFile);
-
-            Optional<Boolean> uploadedResult = ftpService.uploadFile(localFile);
-            if(uploadedResult.isPresent()){
-                System.out.println("File uploaded successfully");
-            }else{
-                System.err.println("File upload failed");
-            }
-
-            Optional<ArrayList<String>> deletedFiles = ftpService.searchAndDeleteFiles("5131736");
-            if(deletedFiles.isPresent()) {
-                printDeletedFiles(deletedFiles.get());
-            }else{
-                System.out.println("Nothing to delete");
-            }
-
+            String directoryName = userComplicate.userSimple.name;
+            Optional<Boolean> directoryNotExist = ftpService.checkIfDirectoryIsAlreadyExist(directoryName);
+            directoryNotExist.ifPresent(
+                    result -> ftpService.createDirectory(directoryName)
+            );
+            ftpService.uploadFile(directoryName ,localFile)
+                    .ifPresentOrElse(
+                    result -> System.out.println("Upload successfully"),
+                            ()      -> System.out.println("Upload failed for some reasons")
+            );
             ftpService.terminateConnection();
 
         } catch (IOException ex) {

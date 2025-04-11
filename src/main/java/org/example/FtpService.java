@@ -41,6 +41,25 @@ public class FtpService {
         return searchFiles(keyword).flatMap(this::deleteTargetFiles);
     }
 
+    public Optional<Boolean> createDirectory(String directoryName){
+        try {
+            ftpClient.makeDirectory(directoryName);
+            return Optional.of(true);
+        } catch (IOException e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Boolean> checkIfDirectoryIsAlreadyExist(String directoryName){
+        try {
+            Boolean directoryAlreadyExist = ftpClient.changeWorkingDirectory(directoryName);
+            if(!directoryAlreadyExist) return Optional.of(true);
+            return Optional.of(false);
+        } catch (IOException e) {
+            return Optional.empty();
+        }
+    }
+
     public Optional<ArrayList<String>> deleteTargetFiles(ArrayList<String> targets) {
         List<String> deletedFiles = targets.stream()
                 .filter(filename -> {
@@ -72,9 +91,10 @@ public class FtpService {
         }
     }
 
-    public Optional<Boolean> uploadFile(String localFile) throws IOException {
+    public Optional<Boolean> uploadFile(String directory, String localFile) throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         String remoteFile = "remote_file_" + timeStamp + ".txt";
+        if(directory != "") ftpClient.changeWorkingDirectory(directory);
         try (FileInputStream inputStream = new FileInputStream(localFile)) {
             return this.ftpClient.storeFile(remoteFile, inputStream)
                     ? Optional.of(true)

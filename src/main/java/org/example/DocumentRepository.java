@@ -12,8 +12,8 @@ public class DocumentRepository {
         String simple = "{\"name\":\"Jordan\",\"email\":\"norman@futurestud.io\",\"age\":26,\"isDeveloper\":true}";
         jedis.set("norman@tuturestud.io", simple);
         String complicate = "{" +
-                "\"name\":\"John Doe\"," +
-                "\"email\":\"johndoe@example.com\"," +
+                "\"name\":\"Jonathan\"," +
+                "\"email\":\"jonathan@example.com\"," +
                 "\"age\":30," +
                 "\"isDeveloper\":true," +
                 "\"field1\":\"value1\"," +
