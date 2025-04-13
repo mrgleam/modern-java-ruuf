@@ -88,11 +88,11 @@ public class FtpService {
         String remoteFile = "remote_file_"+localFile.replace(".json", "")+"_"+ timeStamp + ".txt";
         try {
             if (!Objects.equals(directory, "")) ftpClient.changeWorkingDirectory(directory);
-            System.out.println(directory);
+            //System.out.println(directory);
         }catch(IOException e) {
             return Optional.empty();
         }
-        System.out.println(localFile);
+        //System.out.println(localFile);
         //replace(".json", "")
         try (FileInputStream inputStream = new FileInputStream(localFile)) {
             return this.ftpClient.storeFile(remoteFile, inputStream)

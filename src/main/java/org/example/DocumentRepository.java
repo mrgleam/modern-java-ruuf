@@ -1,9 +1,13 @@
 package org.example;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import redis.clients.jedis.UnifiedJedis;
 
 import javax.swing.text.html.Option;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class DocumentRepository {
@@ -37,6 +41,26 @@ public class DocumentRepository {
                 + "\"createdBy\":\"admin_user\""
                 + "};";
         jedis.set("CASE12345", documentTransactionEntity);
+
+        List<RequestCase> cases = List.of(
+                new RequestCase("CASE001", "COMP001"),
+                new RequestCase("CASE002", "COMP002"),
+                new RequestCase("CASE003", "COMP003"),
+                new RequestCase("CASE004", "COMP004"),
+                new RequestCase("CASE005", "COMP005")
+        );
+
+        Gson gson = new Gson();
+        String casesJsonString = gson.toJson(cases);
+        jedis.set("ALL.CASE", casesJsonString);
+    }
+
+    public Optional<List<RequestCase>> getAllRequestCase(){
+        String requestCases = jedis.get("ALL.CASE");
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<RequestCase>>() {}.getType();
+        List<RequestCase> cases = gson.fromJson(requestCases, listType);
+        return Optional.of(cases);
     }
 
     public Optional<UserSimple> getUserSimpleById(String id){
