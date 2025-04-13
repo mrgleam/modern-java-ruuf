@@ -1,4 +1,4 @@
-package org.example;
+package org.example.entity;
 
 //public record RequestCase(String caseNo, String destinationCompanyCode) {}
 public class RequestCase {

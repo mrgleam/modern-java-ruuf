@@ -1,12 +1,15 @@
-package org.example;
+package org.example.repository;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.example.entity.DocumentTransactionEntity;
+import org.example.entity.RequestCase;
+import org.example.entity.UserComplicate;
+import org.example.entity.UserLegacy;
+import org.example.entity.UserSimple;
 import redis.clients.jedis.UnifiedJedis;
 
-import javax.swing.text.html.Option;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
