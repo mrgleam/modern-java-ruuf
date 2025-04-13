@@ -3,6 +3,7 @@ package org.example;
 import com.google.gson.Gson;
 import redis.clients.jedis.UnifiedJedis;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 public class DocumentRepository {
@@ -23,6 +24,19 @@ public class DocumentRepository {
                 "\"field5\":\"value5\"" +
                 "}";
         jedis.set("complicate@sample.com", complicate);
+        String documentTransactionEntity = "{"
+                + "\"caseNo\":\"CASE12345\","
+                + "\"docType\":\"DOC_TYPE_CODE\","
+                + "\"docClass\":\"DOC_CLASS_CODE\","
+                + "\"destinationCompanyCode\":\"COMP123\","
+                + "\"destinationOfficeCode\":\"OFFICE456\","
+                + "\"totalDocument\":1,"
+                + "\"docStatus\":\"NEW_DOCUMENT_STATUS\","
+                + "\"hireeNo\":\"HIREENO789\","
+                + "\"createdDate\":\"2025-04-11T10:20:30\","
+                + "\"createdBy\":\"admin_user\""
+                + "};";
+        jedis.set("CASE12345", documentTransactionEntity);
     }
 
     public Optional<UserSimple> getUserSimpleById(String id){
@@ -42,6 +56,13 @@ public class DocumentRepository {
 
     public Optional<Boolean> saveUserSimple(UserSimple userSimple) {
         jedis.set(userSimple.email, userSimple.email);
+        return Optional.of(true);
+    }
+
+    public Optional<Boolean> saveDocumentTransactionEntity(DocumentTransactionEntity documentTransactionEntity) {
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(documentTransactionEntity);
+        jedis.set(documentTransactionEntity.getCaseNo(), jsonString);
         return Optional.of(true);
     }
 

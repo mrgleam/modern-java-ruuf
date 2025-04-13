@@ -10,18 +10,10 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class FtpService {
-    private String serverAddress;
-    private int port;
-    private String username;
-    private String password;
 
     private final FTPClient ftpClient;
 
     public FtpService(String serverAddress, int port, String username, String password) {
-        this.serverAddress = serverAddress;
-        this.port = port;
-        this.username = username;
-        this.password = password;
         ftpClient = new FTPClient();
         try {
             ftpClient.connect(serverAddress, port);
@@ -52,7 +44,7 @@ public class FtpService {
 
     public Optional<Boolean> checkIfDirectoryIsAlreadyExist(String directoryName){
         try {
-            Boolean directoryAlreadyExist = ftpClient.changeWorkingDirectory(directoryName);
+            boolean directoryAlreadyExist = ftpClient.changeWorkingDirectory(directoryName);
             if(!directoryAlreadyExist) return Optional.of(true);
             return Optional.of(false);
         } catch (IOException e) {
@@ -91,15 +83,23 @@ public class FtpService {
         }
     }
 
-    public Optional<Boolean> uploadFile(String directory, String localFile) throws IOException {
+    public Optional<Boolean> uploadFile(String directory, String localFile) {
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-        String remoteFile = "remote_file_" + timeStamp + ".txt";
-        if(directory != "") ftpClient.changeWorkingDirectory(directory);
+        String remoteFile = "remote_file_"+localFile.replace(".json", "")+"_"+ timeStamp + ".txt";
+        try {
+            if (!Objects.equals(directory, "")) ftpClient.changeWorkingDirectory(directory);
+            System.out.println(directory);
+        }catch(IOException e) {
+            return Optional.empty();
+        }
+        System.out.println(localFile);
+        //replace(".json", "")
         try (FileInputStream inputStream = new FileInputStream(localFile)) {
             return this.ftpClient.storeFile(remoteFile, inputStream)
                     ? Optional.of(true)
                     : Optional.empty();
         } catch (IOException e) {
+            e.printStackTrace();
             return Optional.empty();
         }
     }
