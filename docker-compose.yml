@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  redis:
+    image: redis
+    container_name: some-redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+  vsftpd:
+    image: fauria/vsftpd
+    container_name: vsftpd
+    environment:
+      FTP_USER: one
+      FTP_PASS: 1234
+    ports:
+      - "2121:21"
+      - "21100-21110:21100-21110"
+    restart: always
