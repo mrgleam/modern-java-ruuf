@@ -3,6 +3,8 @@ package org.example.service;
 import com.google.gson.Gson;
 import org.example.entity.*;
 import org.example.repository.DocumentRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class DocumentTransactionService {
-
+    private static final Logger logger = LoggerFactory.getLogger(DocumentTransactionService.class);
     public void uploadDocumentTransaction() {
         DocumentRepository documentRepository = new DocumentRepository();
         Optional<List<RequestCase>> cases = documentRepository.getAllRequestCase();
@@ -83,16 +85,16 @@ public class DocumentTransactionService {
 
         try (FileWriter fileWriter = new FileWriter("user_complicate.json")) {
             fileWriter.write(jsonStringOfUserComplicate);
-            System.out.println("JSON string has been saved to user_data.json");
+            logger.info("JSON string has been saved to user_data.json");
         } catch (IOException e) {
-            System.err.println("Error writing JSON to file: " + e.getMessage());
+            logger.error("Error writing JSON to file: " + e.getMessage());
         }
 
         try (FileWriter fileWriter = new FileWriter("document_transaction.json")) {
             fileWriter.write(jsonStringOfDocumentTransactionEntity);
-            System.out.println("JSON string has been saved to user_data.json");
+            logger.info("JSON string has been saved to user_data.json");
         } catch (IOException e) {
-            System.err.println("Error writing JSON to file: " + e.getMessage());
+            logger.error("Error writing JSON to file: " + e.getMessage());
         }
 
         ArrayList<String> sourceFileList = new ArrayList<>();
@@ -119,8 +121,8 @@ public class DocumentTransactionService {
         sourceFileList.forEach(fileName ->
                 ftpService.uploadFile(directoryName, fileName)
                         .ifPresentOrElse(
-                                result -> System.out.println("Upload successfully"),
-                                () -> System.out.println("Upload failed for some reasons")
+                                result -> logger.info("Upload successfully"),
+                                () -> logger.error("Upload failed for some reasons")
                         )
         );
 

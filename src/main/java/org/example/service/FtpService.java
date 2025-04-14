@@ -3,6 +3,9 @@ package org.example.service;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
+import org.example.MainFtpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,7 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class FtpService {
-
+    private static final Logger logger = LoggerFactory.getLogger(FtpService.class);
     private final FTPClient ftpClient;
 
     public FtpService(String serverAddress, int port, String username, String password) {
@@ -78,7 +81,7 @@ public class FtpService {
             FTPFile[] listFiles = this.ftpClient.listFiles();
             return (listFiles.length != 0) ? Optional.of(listFiles) : Optional.empty();
         } catch (IOException e) {
-            System.err.println("Error fetching file list: " + e.getMessage());
+            logger.error("Error fetching file list: " + e.getMessage());
             return Optional.empty();
         }
     }
@@ -92,14 +95,12 @@ public class FtpService {
         }catch(IOException e) {
             return Optional.empty();
         }
-        //System.out.println(localFile);
-        //replace(".json", "")
         try (FileInputStream inputStream = new FileInputStream(localFile)) {
             return this.ftpClient.storeFile(remoteFile, inputStream)
                     ? Optional.of(true)
                     : Optional.empty();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
             return Optional.empty();
         }
     }
