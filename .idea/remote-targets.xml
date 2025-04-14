@@ -18,6 +18,16 @@
           </config>
         </ContributedStateBase>
       </target>
+      <target name="WSL2" type="wsl" uuid="d6187657-03ba-43f4-a3bb-986fa96094b5">
+        <config>
+          <option name="distributionMsId" value="Ubuntu-22.04" />
+        </config>
+        <ContributedStateBase type="JavaLanguageRuntime">
+          <config>
+            <option name="homePath" value="/home/dude/.sdkman/candidates/java/23.0.2-zulu" />
+          </config>
+        </ContributedStateBase>
+      </target>
     </targets>
   </component>
 </project>
