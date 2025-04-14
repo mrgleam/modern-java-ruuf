@@ -1,4 +1,11 @@
-Upgrade podman
+# How to run
+1. start both ftp and redis by using podman-compose or docker-compose.
+
+    `podman-compose up -d`
+
+2. run main program
+
+# Upgrade podman ubuntu 22.04
 ubuntu_version='22.04'
 key_url="https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_${ubuntu_version}/Release.key"
 sources_url="https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_${ubuntu_version}"
