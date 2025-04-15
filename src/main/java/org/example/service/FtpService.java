@@ -81,7 +81,7 @@ public class FtpService {
             FTPFile[] listFiles = this.ftpClient.listFiles();
             return (listFiles.length != 0) ? Optional.of(listFiles) : Optional.empty();
         } catch (IOException e) {
-            logger.error("Error fetching file list: " + e.getMessage());
+            logger.error("Error fetching file list: {}", e.getMessage());
             return Optional.empty();
         }
     }
