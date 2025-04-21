@@ -24,10 +24,10 @@ public class DocumentTransactionService {
         if (maybeUserLegacy.isPresent()) {
             UserLegacy userLegacy = maybeUserLegacy.get();
             UserSimple userSimple = new UserSimple(
-                    userLegacy.name,
-                    userLegacy.email,
-                    userLegacy.age,
-                    userLegacy.isDeveloper);
+                    userLegacy.name(),
+                    userLegacy.email(),
+                    userLegacy.age(),
+                    userLegacy.isDeveloper());
             userComplicate = new UserComplicate(
                     userSimple,
                     "f1",

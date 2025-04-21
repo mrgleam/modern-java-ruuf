@@ -1,13 +1,14 @@
 package org.example.entity;
 
-public class UserLegacy {
-    public String name;
-    public String email;
-    public int age;
-    public boolean isDeveloper;
-    public String field1;
-    public String field2;
-    public String field3;
-    public String field4;
-    public String field5;
+public record UserLegacy(
+        String name,
+        String email,
+        int age,
+        boolean isDeveloper,
+        String field1,
+        String field2,
+        String field3,
+        String field4,
+        String field5
+) {
 }
