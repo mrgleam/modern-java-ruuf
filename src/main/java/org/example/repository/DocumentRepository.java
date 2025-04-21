@@ -85,7 +85,7 @@ public class DocumentRepository {
     public Optional<Boolean> saveDocumentTransactionEntity(DocumentTransactionEntity documentTransactionEntity) {
         Gson gson = new Gson();
         String jsonString = gson.toJson(documentTransactionEntity);
-        jedis.set(documentTransactionEntity.getCaseNo(), jsonString);
+        jedis.set(documentTransactionEntity.caseNo(), jsonString);
         return Optional.of(true);
     }
 

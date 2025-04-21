@@ -54,27 +54,25 @@ public class DocumentTransactionService {
 
         //cases.stream().filter()
 
-        DocumentTransactionEntity documentTransactionEntity = new DocumentTransactionEntity();
-        documentTransactionEntity.setCaseNo(userComplicate.userSimple().name() + "-" + userComplicate.userSimple().email());
-        documentTransactionEntity.setCreatedBy(userComplicate.userSimple().name());
-        documentTransactionEntity.setTotalDocument(3);
-        documentTransactionEntity.setCreatedDate(new Date());
-
-        if (!requestCases.isEmpty()) {
-            Optional<RequestCase> case005 = requestCases.stream()
-                    .filter(requestCase -> requestCase.getCaseNo().equals("CASE005"))
-                    .findFirst();
-            case005.ifPresentOrElse(
-                    c5 -> documentTransactionEntity.setDestinationCompanyCode(c5.getDestinationCompanyCode()),
-                    () -> documentTransactionEntity.setDestinationCompanyCode("COMP001")
-            );
-        } else {
-            documentTransactionEntity.setDestinationCompanyCode("COMP002");
-
-        }
-        documentTransactionEntity.setDocStatus("status1");
-        documentTransactionEntity.setDocClass("CASE003");
-        documentTransactionEntity.setHireeNo("hireNo");
+        String caseNo = userComplicate.userSimple().name() + "-" + userComplicate.userSimple().email();
+        String createdBy = userComplicate.userSimple().name();
+        String destinationCompanyCode = !requestCases.isEmpty()
+                ? requestCases
+                .stream()
+                .filter(RequestCase::isCase005)
+                .findFirst()
+                .map(RequestCase::destinationCompanyCode)
+                .orElse("COMP001")
+                : "COMP002";
+        var documentTransactionEntity = new DocumentTransactionEntity(
+                caseNo,
+                "CASE003",
+                destinationCompanyCode,
+                3,
+                "status1",
+                "hireNo",
+                createdBy
+        );
 
         Gson gson = new Gson();
         String jsonStringOfUserComplicate = gson.toJson(userComplicate);
@@ -85,14 +83,14 @@ public class DocumentTransactionService {
 
         try (FileWriter fileWriter = new FileWriter("user_complicate.json")) {
             fileWriter.write(jsonStringOfUserComplicate);
-            logger.info("JSON string has been saved to user_data.json");
+            logger.info("JSON string has been saved to user_complicate.json");
         } catch (IOException e) {
             logger.error("Error writing JSON to file: " + e.getMessage());
         }
 
         try (FileWriter fileWriter = new FileWriter("document_transaction.json")) {
             fileWriter.write(jsonStringOfDocumentTransactionEntity);
-            logger.info("JSON string has been saved to user_data.json");
+            logger.info("JSON string has been saved to document_transaction.json");
         } catch (IOException e) {
             logger.error("Error writing JSON to file: " + e.getMessage());
         }
