@@ -55,8 +55,8 @@ public class DocumentTransactionService {
         //cases.stream().filter()
 
         DocumentTransactionEntity documentTransactionEntity = new DocumentTransactionEntity();
-        documentTransactionEntity.setCaseNo(userComplicate.userSimple.name + "-" + userComplicate.userSimple.email);
-        documentTransactionEntity.setCreatedBy(userComplicate.userSimple.name);
+        documentTransactionEntity.setCaseNo(userComplicate.userSimple().name() + "-" + userComplicate.userSimple().email());
+        documentTransactionEntity.setCreatedBy(userComplicate.userSimple().name());
         documentTransactionEntity.setTotalDocument(3);
         documentTransactionEntity.setCreatedDate(new Date());
 

@@ -2,11 +2,7 @@ package org.example.repository;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.example.entity.DocumentTransactionEntity;
-import org.example.entity.RequestCase;
-import org.example.entity.UserComplicate;
-import org.example.entity.UserLegacy;
-import org.example.entity.UserSimple;
+import org.example.entity.*;
 import redis.clients.jedis.UnifiedJedis;
 
 import java.lang.reflect.Type;
@@ -77,12 +73,12 @@ public class DocumentRepository {
     public Optional<Boolean> saveUserComplicate(UserComplicate userComplicate) {
         Gson gson = new Gson();
         String jsonString = gson.toJson(userComplicate);
-        jedis.set(userComplicate.userSimple.email, jsonString);
+        jedis.set(userComplicate.userSimple().email(), jsonString);
         return Optional.of(true);
     }
 
     public Optional<Boolean> saveUserSimple(UserSimple userSimple) {
-        jedis.set(userSimple.email, userSimple.email);
+        jedis.set(userSimple.email(), userSimple.email());
         return Optional.of(true);
     }
 
