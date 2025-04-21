@@ -20,37 +20,9 @@ public class DocumentTransactionService {
         List<RequestCase> requestCases = cases.orElse(Collections.emptyList());
 
         Optional<UserLegacy> maybeUserLegacy = documentRepository.getUserLegacyById("complicate@sample.com");
-        UserComplicate userComplicate;
-        if (maybeUserLegacy.isPresent()) {
-            UserLegacy userLegacy = maybeUserLegacy.get();
-            UserSimple userSimple = new UserSimple(
-                    userLegacy.name(),
-                    userLegacy.email(),
-                    userLegacy.age(),
-                    userLegacy.isDeveloper());
-            userComplicate = new UserComplicate(
-                    userSimple,
-                    "f1",
-                    "f2",
-                    "f3",
-                    "f4",
-                    "f5");
-
-        } else {
-            UserSimple userSimple = new UserSimple(
-                    "New",
-                    "new@customer",
-                    22,
-                    false
-            );
-            userComplicate = new UserComplicate(
-                    userSimple,
-                    "ff1",
-                    "ff2",
-                    "ff3",
-                    "ff4",
-                    "ff5");
-        }
+        UserComplicate userComplicate = maybeUserLegacy
+                .map(UserLegacy::toUserComplicate)
+                .orElse(this.makeNewUserComplicate());
 
         //cases.stream().filter()
 
@@ -125,5 +97,21 @@ public class DocumentTransactionService {
         );
 
         ftpService.terminateConnection();
+    }
+
+    private UserComplicate makeNewUserComplicate() {
+        UserSimple userSimple = new UserSimple(
+                "New",
+                "new@customer",
+                22,
+                false
+        );
+        return new UserComplicate(
+                userSimple,
+                "ff1",
+                "ff2",
+                "ff3",
+                "ff4",
+                "ff5");
     }
 }
