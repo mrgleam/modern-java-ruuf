@@ -1,13 +1,12 @@
 package org.example.service;
 
-import com.google.gson.Gson;
 import org.example.entity.*;
 import org.example.repository.DocumentRepository;
+import org.example.utils.Compose;
+import org.example.utils.FileWriterUtil;
+import org.example.utils.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -46,26 +45,23 @@ public class DocumentTransactionService {
                 createdBy
         );
 
-        Gson gson = new Gson();
-        String jsonStringOfUserComplicate = gson.toJson(userComplicate);
-        String jsonStringOfDocumentTransactionEntity = gson.toJson(documentTransactionEntity);
+        var userComplicateFileName = "user_complicate.json";
+        JsonUtil.safeToJson(userComplicate)
+                .flatMap(Compose.pipe(
+                        documentRepository.save(userComplicate.userSimple().email()),
+                        FileWriterUtil.to(userComplicateFileName)
+                ))
+                .onSuccess(u -> logger.info("JSON string has been saved to " + userComplicateFileName))
+                .onFailure(e -> logger.error("Error writing JSON to file: " + e.getMessage()));
 
-        documentRepository.saveUserComplicate(userComplicate);
-        documentRepository.saveDocumentTransactionEntity(documentTransactionEntity);
-
-        try (FileWriter fileWriter = new FileWriter("user_complicate.json")) {
-            fileWriter.write(jsonStringOfUserComplicate);
-            logger.info("JSON string has been saved to user_complicate.json");
-        } catch (IOException e) {
-            logger.error("Error writing JSON to file: " + e.getMessage());
-        }
-
-        try (FileWriter fileWriter = new FileWriter("document_transaction.json")) {
-            fileWriter.write(jsonStringOfDocumentTransactionEntity);
-            logger.info("JSON string has been saved to document_transaction.json");
-        } catch (IOException e) {
-            logger.error("Error writing JSON to file: " + e.getMessage());
-        }
+        var documentTransactionFileName = "document_transaction.json";
+        JsonUtil.safeToJson(documentTransactionEntity)
+                .flatMap(Compose.pipe(
+                        documentRepository.save(documentTransactionEntity.caseNo()),
+                        FileWriterUtil.to(documentTransactionFileName)
+                ))
+                .onSuccess(u -> logger.info("JSON string has been saved to " + documentTransactionFileName))
+                .onFailure(e -> logger.error("Error writing JSON to file: " + e.getMessage()));
 
         ArrayList<String> sourceFileList = new ArrayList<>();
         sourceFileList.add("user_complicate.json");

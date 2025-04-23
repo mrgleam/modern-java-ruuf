@@ -3,11 +3,13 @@ package org.example.repository;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.example.entity.*;
+import org.example.utils.*;
 import redis.clients.jedis.UnifiedJedis;
 
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class DocumentRepository {
     UnifiedJedis jedis;
@@ -70,11 +72,15 @@ public class DocumentRepository {
         return Optional.of(userObject);
     }
 
-    public Optional<Boolean> saveUserComplicate(UserComplicate userComplicate) {
-        Gson gson = new Gson();
-        String jsonString = gson.toJson(userComplicate);
-        jedis.set(userComplicate.userSimple().email(), jsonString);
-        return Optional.of(true);
+    public Function<String, Result<Unit, Exception>> save(String key) {
+        return value -> {
+            try {
+                jedis.set(key, value);
+                return new Success<>(Unit.INSTANCE);
+            } catch (Exception e) {
+                return new Failure<>(e);
+            }
+        };
     }
 
     public Optional<Boolean> saveUserSimple(UserSimple userSimple) {
